@@ -40,7 +40,7 @@ export const startRecording = async () => {
   };
   
 
-const API_KEY = "6a7d7af4e5cd484fb8f6ac368b19a2f6";
+const API_KEY = process.env.EXPO_PUBLIC_SPEECHAPIKEY;
 
 export const transcribeWithAssembly = async (uri) => {
     console.log("Starting AssemblyAI transcription for:", uri);

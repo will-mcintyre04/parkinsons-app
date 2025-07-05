@@ -1,10 +1,52 @@
+import { addMedicineLog } from '@/database/db-medical';
+import { generateMotivationalQuote } from '@/database/interactwithAI';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 export default function SuccessLogScreen() {
     const { medication, dosage } = useLocalSearchParams();
+    const router = useRouter();
+    const [quote, setQuote] = useState('');
+
+    useEffect(() => {
+        // Fetch quote once on mount
+        const fetchQuote = async () => {
+          const result = await generateMotivationalQuote();
+          setQuote(result);
+        };
+        fetchQuote();
+      }, []);
+    
+
+    useEffect(() => {
+        if (medication && dosage) {
+          const timestamp = new Date().toISOString();
+          addMedicineLog(timestamp, medication, dosage);
+          console.log('Medicine log successfully added.');
+        }
+      }, [medication, dosage]);
+
+      useEffect(() => {
+        const timeout = setTimeout(() => {
+            router.push({
+                pathname: '/voicemode/motivationalQuoteScreen',
+                params: { quote },
+              });
+        }, 5000);
+        return () => clearTimeout(timeout);
+      }, []);
+
+      const handleNext = () => {
+        router.push({
+          pathname: '/voicemode/motivationalQuoteScreen',
+          params: { quote },
+        });
+      };
+    
+      
 
   return (
     <>
@@ -16,11 +58,11 @@ export default function SuccessLogScreen() {
         </Text>
       </View>
   
-        <View style={styles.bottomStack}>
-            <View style={styles.arcTop} />
-            <View style={styles.nextContainer}>
-            <Text style={styles.nextText}>Next &gt;</Text>
-            </View>
+      <View style={styles.bottomStack}>
+        <View style={styles.arcTop} />
+        <TouchableOpacity style={styles.nextContainer} onPress={handleNext}>
+          <Text style={styles.nextText}>Next &gt;</Text>
+        </TouchableOpacity>
       </View>
     </>
   );

@@ -1,5 +1,5 @@
 import { VoiceTrigger } from '@/components/VoiceTrigger';
-import { extractMedicationAndDosage } from '@/database/extractMedicationAndDosage';
+import { extractMedicationAndDosage } from '@/database/interactwithAI';
 import * as Font from 'expo-font';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
