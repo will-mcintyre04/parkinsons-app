@@ -4,6 +4,7 @@ import LiftToTalkIcon from '@/assets/LiftToTalk';
 import Pills from '@/assets/Pills';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Font from 'expo-font';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Platform,
@@ -20,6 +21,7 @@ export default function PatientHomeScreen() {
   const [mode, setMode] = useState <'Patient' | 'Caregiver'>('Patient');
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [fontError, setFontError] = useState<string | null>(null);
+  const router = useRouter();
 
   const toggleMode = () => {
     setMode((prev) => (prev === 'Patient' ? 'Caregiver' : 'Patient'));
@@ -78,12 +80,12 @@ export default function PatientHomeScreen() {
 
       {/* Cards */}
       <View style={styles.cardContainer}>
-        <View style={styles.card1}>
+        <TouchableOpacity style={styles.card1} onPress={() => router.push('/voicemode/step1')}>
         <MaterialIcons name="mic" size={40} color="#DED7CD" />
           <View style={styles.textRow}>
             <Text style={styles.cardText}>Activate voice mode</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.card2}>
           <LiftToTalkIcon width={40} height={40} />

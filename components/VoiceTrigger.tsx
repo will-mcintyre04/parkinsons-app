@@ -58,9 +58,9 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
 };
 
 const CIRCLE_SIZE = {
-  bottom: 500,
-  middle: 460,
-  top: 420,
+  bottom: 800,
+  middle: 700,
+  top: 600,
 };
 
 const styles = StyleSheet.create({
@@ -79,6 +79,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '300',
     fontFamily: 'System',
+    width: 283,
+    textAlign: "center"
   },
   transcriptText: {
     marginTop: 16,
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
   },
   arcBottom: {
     position: 'absolute',
-    bottom: -25,
+    bottom: -350,
     width: CIRCLE_SIZE.bottom,
     height: CIRCLE_SIZE.bottom,
     borderRadius: CIRCLE_SIZE.bottom / 2,
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
   },
   arcMiddle: {
     position: 'absolute',
-    bottom: -50,
+    bottom: -300,
     width: CIRCLE_SIZE.middle,
     height: CIRCLE_SIZE.middle,
     borderRadius: CIRCLE_SIZE.middle / 2,
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
   },
   arcTop: {
     position: 'absolute',
-    bottom: -75,
+    bottom: -250,
     width: CIRCLE_SIZE.top,
     height: CIRCLE_SIZE.top,
     borderRadius: CIRCLE_SIZE.top / 2,
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
   },
   micContainer: {
     position: 'absolute',
-    bottom: 200,
+    bottom: 124,
     zIndex: 10,
   },
   bottomBox: {

@@ -2,17 +2,14 @@ import { VoiceTrigger } from '@/components/VoiceTrigger';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-export default function Step1() {
+export default function JournalReading() {
   const router = useRouter();
 
   const handleTranscript = (text: string) => {
     const lower = text.toLowerCase();
 
-    if (lower.includes('medication')) {
-      router.push({
-        pathname: '/voicemode/step2',
-        params: { transcript: text },
-      });
+    if (lower.includes('yes')) {
+      router.push('/voicemode/step2');
     } else if (lower.includes('session')) {
       router.push('/voicemode/sessionStart');
     } else {
@@ -23,7 +20,7 @@ export default function Step1() {
   return (
     <>
       <StatusBar hidden />
-      <VoiceTrigger onTranscript={handleTranscript} />
+      <VoiceTrigger onTranscript={handleTranscript} prompt="Do you want to journal how you feel?"/>
     </>
   );
 }
