@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
 import TremorMonitor from '@/components/TremorMonitor';
 
 export default function HomeScreen() {
@@ -18,7 +17,7 @@ export default function HomeScreen() {
         />
       }>
 
-      {/* 👇 Add this section here */}
+      {/* Tremor Monitor */}
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Tremor Monitor</ThemedText>
         <TremorMonitor />

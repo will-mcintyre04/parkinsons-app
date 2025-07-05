@@ -15,6 +15,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@shopify/react-native-skia": "^2.1.1",
     "d3-shape": "^3.2.0",
     "expo": "~53.0.17",
     "expo-blur": "~14.1.5",
@@ -39,9 +40,9 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-svg": "15.11.2",
-    "react-native-svg-charts": "^5.4.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5"
+    "react-native-webview": "13.13.5",
+    "victory-native": "^37.3.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
