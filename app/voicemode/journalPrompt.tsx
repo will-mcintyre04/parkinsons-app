@@ -2,16 +2,16 @@ import { VoiceTrigger } from '@/components/VoiceTrigger';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-export default function JournalReading() {
+export default function JournalPrompt() {
   const router = useRouter();
 
   const handleTranscript = (text: string) => {
     const lower = text.toLowerCase();
 
     if (lower.includes('yes')) {
-      router.push('/voicemode/step2');
-    } else if (lower.includes('session')) {
-      router.push('/voicemode/sessionStart');
+      router.push('/voicemode/journalWrite');
+    } else if (lower.includes('no')) {
+      router.push('/');
     } else {
       console.warn('No recognized keyword found:', text);
     }
