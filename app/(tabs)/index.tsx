@@ -6,7 +6,6 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import TremorMonitor from '@/components/TremorMonitor';
-
 import { initDatabase } from '@/database/db-service';
 import { useEffect } from 'react';
 

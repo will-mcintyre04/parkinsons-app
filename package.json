@@ -36,6 +36,7 @@
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
     "fft.js": "^4.0.4",
+    "openai": "^5.8.2",
     "lottie-react-native": "^7.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
