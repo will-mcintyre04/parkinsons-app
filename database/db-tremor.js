@@ -17,7 +17,7 @@ export const deleteTremorLog = (id) => {
   
     db.runSync(`DELETE FROM TremorLogs WHERE id = ?`, [id]);
   
-    console.log(`🗑️ Deleted tremor log with ID: ${id}`);
+    console.log(`Deleted tremor log with ID: ${id}`);
   };
 
 // Find all Tremor Logs

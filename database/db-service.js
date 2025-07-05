@@ -6,7 +6,7 @@ let db;
 export const initDatabase = () => {
   try {
     db = SQLite.openDatabaseSync('parkinson.db');
-    console.log('🗂️ SQLite DB (sync) opened');
+    console.log('SQLite DB (sync) opened');
 
     db.execSync(`
       CREATE TABLE IF NOT EXISTS MedicineLogs (
