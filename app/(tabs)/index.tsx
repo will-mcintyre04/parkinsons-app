@@ -32,7 +32,7 @@ export default function HomeScreen() {
         <TremorMonitor />
       </ThemedView>
 
-      <Button title="Start session" onPress={() => router.push('/voicemode/step1')}></Button>
+      <Button title="Start session" onPress={() => router.push('/voicemode/sessionStart')}></Button>
     </ParallaxScrollView>
   );
 }

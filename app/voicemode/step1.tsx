@@ -11,7 +11,7 @@ export default function Step1() {
     if (lower.includes('medication')) {
       router.push('/voicemode/step2');
     } else if (lower.includes('session')) {
-      router.push('/voicemode/step3');
+      router.push('/voicemode/sessionStart');
     } else {
       console.warn('No recognized keyword found:', text);
     }
