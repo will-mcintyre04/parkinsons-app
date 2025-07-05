@@ -12,14 +12,17 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@material-symbols/svg-500": "^0.32.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
     "@shopify/react-native-skia": "^2.1.1",
     "d3-shape": "^3.2.0",
     "expo": "~53.0.17",
+    "expo-av": "~15.1.7",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.7",
+    "expo-file-system": "~18.1.11",
     "expo-font": "~13.3.2",
     "expo-haptics": "~14.1.4",
     "expo-image": "~2.3.2",
@@ -42,8 +45,6 @@
     "react-native-svg": "15.11.2",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
-    "expo-av": "~15.1.7",
-    "expo-file-system": "~18.1.11",
     "victory-native": "^37.3.6"
   },
   "devDependencies": {
