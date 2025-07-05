@@ -9,7 +9,10 @@ export default function Step1() {
     const lower = text.toLowerCase();
 
     if (lower.includes('medication')) {
-      router.push('/voicemode/step2');
+      router.push({
+        pathname: '/voicemode/step2',
+        params: { transcript: text },
+      });
     } else if (lower.includes('session')) {
       router.push('/voicemode/step3');
     } else {
