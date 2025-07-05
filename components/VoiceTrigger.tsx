@@ -1,20 +1,14 @@
-// components/VoiceTrigger.tsx
 import { startRecording, stopRecording, transcribeWithAssembly } from '@/database/speech-service';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface VoiceTriggerProps {
+  onTranscript: (text: string) => void;
   prompt?: string;
-  onMatch?: (keyword: string) => void;
-  onTranscript?: (text: string) => void;
 }
 
-export const VoiceTrigger = ({
-  prompt = 'talk anytime.',
-  onMatch,
-  onTranscript,
-}: VoiceTriggerProps) => {
+export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTriggerProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
 
@@ -28,17 +22,8 @@ export const VoiceTrigger = ({
         setIsRecording(false);
         const uri = await stopRecording();
         const text = await transcribeWithAssembly(uri);
-        const lower = text.toLowerCase();
         setTranscript(text);
-        onTranscript?.(text);
-
-        if (lower.includes('medication')) {
-          onMatch?.('medication');
-        } else if (lower.includes('session')) {
-          onMatch?.('session');
-        } else {
-          console.warn('No recognized keyword found in transcript.');
-        }
+        onTranscript(text); // 🔥 this is the only thing the parent cares about
       }
     } catch (err) {
       console.error(err);
@@ -50,9 +35,7 @@ export const VoiceTrigger = ({
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{prompt}</Text>
-        {transcript !== '' && (
-          <Text style={styles.transcriptText}>“{transcript}”</Text>
-        )}
+        {transcript && <Text style={styles.transcriptText}>“{transcript}”</Text>}
       </View>
 
       <View style={styles.bottomStack}>

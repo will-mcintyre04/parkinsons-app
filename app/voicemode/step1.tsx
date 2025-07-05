@@ -5,18 +5,22 @@ import { StatusBar } from 'expo-status-bar';
 export default function Step1() {
   const router = useRouter();
 
-  const handleKeyword = (keyword: string) => {
-    if (keyword === 'medication') {
+  const handleTranscript = (text: string) => {
+    const lower = text.toLowerCase();
+
+    if (lower.includes('medication')) {
       router.push('/voicemode/step2');
-    } else if (keyword === 'session') {
+    } else if (lower.includes('session')) {
       router.push('/voicemode/step3');
+    } else {
+      console.warn('No recognized keyword found:', text);
     }
   };
 
   return (
     <>
       <StatusBar hidden />
-      <VoiceTrigger onMatch={handleKeyword} />
+      <VoiceTrigger onTranscript={handleTranscript} />
     </>
   );
 }
