@@ -13,7 +13,6 @@ import {
     VictoryAxis,
     VictoryChart,
     VictoryContainer,
-    VictoryLabel,
     VictoryLine,
     VictoryTheme,
 } from 'victory-native';
@@ -24,11 +23,13 @@ const SAMPLE_INTERVAL = 1000 / SAMPLE_RATE;
 const WINDOW_SIZE = 512;
 const screenWidth = Dimensions.get('window').width;
 const chartWidth = screenWidth - 32;
+const NOISE_THRESHOLD = 0.1;
 
 export default function TremorMonitor() {
   const [buffer, setBuffer] = useState<number[]>([]);
   const [graphData, setGraphData] = useState<{ x: number; y: number }[]>([]);
   const [fftData, setFftData] = useState<{ x: number; y: number }[]>([]);
+  const [dominantFreq, setDominantFreq] = useState<number | null>(null);
   const [std, setStd] = useState<number | null>(null);
   const [isMeasuring, setIsMeasuring] = useState(false);
   const subscriptionRef = useRef<any>(null);
@@ -39,6 +40,7 @@ export default function TremorMonitor() {
     setGraphData([]);
     setFftData([]);
     setStd(null);
+    setDominantFreq(null);
     setIsMeasuring(true);
     counterRef.current = 0;
 
@@ -58,7 +60,9 @@ export default function TremorMonitor() {
           subscriptionRef.current?.remove();
           const windowed = updated.slice(-WINDOW_SIZE);
           computeSTD(windowed);
-          setFftData(computeFFT(windowed, SAMPLE_RATE));
+          const { fft, correctedDominantFreq } = computeFFT(windowed, SAMPLE_RATE);
+          setFftData(fft);
+          setDominantFreq(correctedDominantFreq);
           setIsMeasuring(false);
         }
         return updated;
@@ -81,34 +85,37 @@ export default function TremorMonitor() {
     const fft: { x: number; y: number }[] = [];
 
     for (let k = 0; k < N / 2; k++) {
-        let real = 0;
-        let imag = 0;
-
-        for (let n = 0; n < N; n++) {
+      let real = 0;
+      let imag = 0;
+      for (let n = 0; n < N; n++) {
         const angle = (2 * Math.PI * k * n) / N;
         real += zeroMeanSamples[n] * Math.cos(angle);
         imag -= zeroMeanSamples[n] * Math.sin(angle);
-        }
-
-        const magnitude = Math.sqrt(real ** 2 + imag ** 2) / N;
-        const frequency = (k * sampleRate) / N;
-        fft.push({ x: frequency, y: magnitude });
+      }
+      const magnitude = Math.sqrt(real ** 2 + imag ** 2) / N;
+      const frequency = (k * sampleRate) / N;
+      fft.push({ x: frequency, y: magnitude });
     }
 
-    return fft;
-};
+    const dominant = fft
+      .filter((p) => p.x > 1 && p.x < 30) // up to 30 Hz (15 Hz corrected)
+      .reduce((max, p) => (p.y > max.y ? p : max), { x: 0, y: 0 });
 
+      // Each cycle produces two peaks, divide the freq by 2
+    const correctedDominantFreq =
+      dominant.y >= NOISE_THRESHOLD ? dominant.x / 2 : null;
+
+    return { fft, correctedDominantFreq };
+  };
 
   const smoothData = (data: { x: number; y: number }[], windowSize: number) => {
     if (data.length < windowSize) return data;
     const smoothed: { x: number; y: number }[] = [];
-
     for (let i = 0; i < data.length - windowSize + 1; i++) {
       const window = data.slice(i, i + windowSize);
       const avgY = window.reduce((sum, d) => sum + d.y, 0) / window.length;
       smoothed.push({ x: window[Math.floor(windowSize / 2)].x, y: avgY });
     }
-
     return smoothed;
   };
 
@@ -209,47 +216,29 @@ export default function TremorMonitor() {
                 style={{ data: { stroke: '#ff3d00', strokeWidth: 2 } }}
                 interpolation="linear"
               />
-              {fftData.length > 0 && (() => {
-                const dominantFreq = fftData.reduce((max, p) => (p.y > max.y ? p : max), { x: 0, y: 0 });
-                return (
-                  <>
-                    <VictoryLine
-                      data={[
-                        { x: dominantFreq.x, y: 0 },
-                        { x: dominantFreq.x, y: dominantFreq.y },
-                      ]}
-                      style={{
-                        data: {
-                          stroke: '#00bcd4',
-                          strokeWidth: 2,
-                          strokeDasharray: '4,4',
-                        },
-                      }}
-                    />
-                    <VictoryLine
-                      data={[dominantFreq]}
-                      labels={[`Peak: ${dominantFreq.x.toFixed(2)} Hz`]}
-                      labelComponent={
-                        <VictoryLabel dy={-10} style={{ fill: '#00bcd4', fontSize: 12 }} />
-                      }
-                      style={{ data: { stroke: '#00bcd4' } }}
-                    />
-                  </>
-                );
-              })()}
+              {dominantFreq && (
+                <VictoryLine
+                  data={[
+                    { x: dominantFreq, y: 0 },
+                    { x: dominantFreq, y: Math.max(...fftData.map((p) => p.y)) },
+                  ]}
+                  style={{
+                    data: {
+                      stroke: '#00bcd4',
+                      strokeWidth: 4,
+                      strokeDasharray: '4,4',
+                    },
+                  }}
+                />
+              )}
             </VictoryChart>
           </ScrollView>
 
-          {fftData.length > 0 && (() => {
-            const dominantFreq = fftData.reduce((max, p) => (p.y > max.y ? p : max), { x: 0, y: 0 });
-            //Correct the frequency (each cycle produces two acceleration peaks)
-            const correctedFreq = dominantFreq.x/2
-            return (
-              <Text style={styles.chartTitle}>
-                Dominant Frequency: {correctedFreq.toFixed(2)} Hz
-              </Text>
-            );
-          })()}
+          <Text style={styles.chartTitle}>
+            {dominantFreq === null
+              ? 'No Tremor Detected'
+              : `Dominant Frequency: ${dominantFreq.toFixed(2)} Hz`}
+          </Text>
         </>
       )}
 
@@ -258,7 +247,9 @@ export default function TremorMonitor() {
           <ThemedText type="subtitle">
             Tremor Intensity: <Text style={styles.bold}>{std.toFixed(3)}</Text>
           </ThemedText>
-          <Text style={[styles.levelText, { color }]}>{emoji} {label}</Text>
+          <Text style={[styles.levelText, { color }]}>
+            {emoji} {label}
+          </Text>
         </View>
       )}
     </ScrollView>
@@ -279,11 +270,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 10,
     color: '#000',
-  },
-  chartWrapper: {
-    width: '100%',
-    paddingHorizontal: 16,
-    alignItems: 'center',
   },
   resultBox: {
     marginTop: 40,
