@@ -1,35 +1,63 @@
+import { startRecording, stopRecording, transcribeWithAssembly } from '@/database/speech-service';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Step1() {
   const router = useRouter();
+  const [isRecording, setIsRecording] = useState(false);
+  const [transcript, setTranscript] = useState('');
+
+  const handleMicPress = async () => {
+    try {
+      if (!isRecording) {
+        setTranscript('');
+        setIsRecording(true);
+        await startRecording();
+      } else {
+        setIsRecording(false);
+        const uri = await stopRecording();
+        const text = await transcribeWithAssembly(uri);
+        setTranscript(text);
+      }
+    } catch (err) {
+      console.error(err);
+      setIsRecording(false);
+    }
+  };
 
   return (
     <TouchableOpacity style={styles.container} onPress={() => router.push('/voicemode/step2')}>
       <StatusBar hidden />
 
-      {/* Top Message */}
       <View style={styles.textContainer}>
         <Text style={styles.title}>talk anytime.</Text>
+        {transcript !== '' && (
+          <Text style={styles.transcriptText}>“{transcript}”</Text>
+        )}
       </View>
 
-      {/* Arcs + Mic */}
       <View style={styles.bottomStack}>
-        {/* Circles stacked from bottom to top */}
         <View style={styles.arcBottom} />
         <View style={styles.arcMiddle} />
         <View style={styles.arcTop} />
 
-        <View style={styles.micContainer}>
-          <MaterialIcons name="mic" size={48} color="#DED7CD" />
-        </View>
-        <View style={styles.bottomBox}></View>
+        <TouchableOpacity style={styles.micContainer} onPress={handleMicPress}>
+          <MaterialIcons
+            name={isRecording ? 'stop-circle' : 'mic'}
+            size={48}
+            color={isRecording ? '#FF6A6A' : '#DED7CD'}
+          />
+        </TouchableOpacity>
+
+        <View style={styles.bottomBox} />
       </View>
     </TouchableOpacity>
   );
 }
+
 
 const CIRCLE_SIZE = {
   bottom: 500,
@@ -38,6 +66,14 @@ const CIRCLE_SIZE = {
 };
 
 const styles = StyleSheet.create({
+  transcriptText: {
+    marginTop: 16,
+    paddingHorizontal: 24,
+    fontSize: 16,
+    color: '#333',
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#EFE9E1',
