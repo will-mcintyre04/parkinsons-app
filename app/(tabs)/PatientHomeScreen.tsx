@@ -1,4 +1,7 @@
 
+//import LiftToTalkIcon from '@/assets/images/lift_to_talk.svg';
+import LiftToTalkIcon from '@/assets/LiftToTalk';
+import Pills from '@/assets/Pills';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Font from 'expo-font';
 import React, { useEffect, useState } from 'react';
@@ -10,6 +13,8 @@ import {
   View,
 } from 'react-native';
 import { styles } from './PatientHomeStyles';
+
+
 
 export default function PatientHomeScreen() {
   const [mode, setMode] = useState <'Patient' | 'Caregiver'>('Patient');
@@ -81,12 +86,14 @@ export default function PatientHomeScreen() {
         </View>
 
         <View style={styles.card2}>
+          <LiftToTalkIcon width={40} height={40} />
           <View style={styles.textRow}>
             <Text style={styles.cardText}>Start a session</Text>
           </View>
         </View>
 
         <View style={styles.card3}>
+          <Pills width={40} height={40} />
           <View style={styles.textRow}>
             <Text style={styles.cardText}>Track your meds</Text>
           </View>
