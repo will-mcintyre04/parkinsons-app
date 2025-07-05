@@ -79,6 +79,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '300',
     fontFamily: 'System',
+    width: 283,
+    textAlign: "center"
   },
   transcriptText: {
     marginTop: 16,
