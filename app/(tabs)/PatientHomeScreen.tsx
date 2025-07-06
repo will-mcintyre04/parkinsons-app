@@ -1,6 +1,7 @@
 
-//import LiftToTalkIcon from '@/assets/images/lift_to_talk.svg';
+import FinanceModeIcon from '@/assets/FinanceMode';
 import LiftToTalkIcon from '@/assets/LiftToTalk';
+import SettingsIcon from '@/assets/ManageAcounts';
 import Pills from '@/assets/Pills';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Font from 'expo-font';
@@ -62,16 +63,8 @@ export default function PatientHomeScreen() {
     );
   }
 
-  return (
-    <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 48 }]}>
-      {/* Mode Switch Header */}
-      <View style={styles.modeSwitchRow}>
-        <TouchableOpacity style={styles.modeToggle} onPress={toggleMode}>
-          <MaterialIcons name="swap-horiz" size={20} color="black" />
-          <Text style={styles.modeText}>{mode} Mode</Text>
-        </TouchableOpacity>
-      </View>
-
+  const renderPatientView = () => (
+    <>
       {/* Greeting Section */}
       <View style={styles.greetingContainer}>
         <Text style={styles.greetingTitle}>Hi Dee!</Text>
@@ -81,7 +74,7 @@ export default function PatientHomeScreen() {
       {/* Cards */}
       <View style={styles.cardContainer}>
         <TouchableOpacity style={styles.card1} onPress={() => router.push('/voicemode/step1')}>
-        <MaterialIcons name="mic" size={40} color="#DED7CD" />
+          <MaterialIcons name="mic" size={40} color="#DED7CD" />
           <View style={styles.textRow}>
             <Text style={styles.cardText}>Activate voice mode</Text>
           </View>
@@ -101,6 +94,44 @@ export default function PatientHomeScreen() {
           </View>
         </View>
       </View>
+    </>
+  );
+
+  const renderCaregiverView = () => (
+    <View style={styles.greetingContainerCaregiver}>
+      <Text style={styles.greetingTitleCaregiver}>Hi Dave!</Text>
+      <Text style={styles.greetingSubtitleCaregiver}>Let's see how Dee's doing!</Text>
+  
+      <View style={styles.boxWrapperCaregiver}>
+      <TouchableOpacity
+        style={styles.caregiverBox}
+        onPress={() => router.push('/Analytics/analyticsMain')}
+        activeOpacity={0.8}
+      >
+        <FinanceModeIcon width={40} height={40} />
+        <Text style={styles.analyticsLabel}>View Analytics</Text>
+      </TouchableOpacity>
+
+      <View style={styles.caregiverBoxAlt}>
+        <SettingsIcon width={40} height={40} />
+        <Text style={styles.analyticsLabel}>Manage Preferences</Text>
+      </View>
+    </View>
+    </View>
+
+  );
+
+  return (
+    <View style={[styles.container, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 48 }]}>
+      {/* Mode Switch Header */}
+      <View style={styles.modeSwitchRow}>
+        <TouchableOpacity style={styles.modeToggle} onPress={toggleMode}>
+          <MaterialIcons name="swap-horiz" size={20} color="black" />
+          <Text style={styles.modeText}>{mode} Mode</Text>
+        </TouchableOpacity>
+      </View>
+
+      {mode === 'Patient' ? renderPatientView() : renderCaregiverView()}
     </View>
   );
 }
