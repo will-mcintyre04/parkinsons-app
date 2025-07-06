@@ -1,5 +1,6 @@
 import { insertMockTremorLogs } from '@/database/InsertMockTremors';
 import { getDb } from '@/database/db-service';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import TremorFrequencyGraph from './TremorFrequencyGraph';
@@ -41,6 +42,7 @@ export default function AnalyticsMain() {
     const [since, setSince] = useState<string>(() => getTimeSinceLabel('1W'));
     const [selectedRange, setSelectedRange] = useState<string>('1W');
     const [graphIndex, setGraphIndex] = useState(0);
+    const router = useRouter();
     
     
   
@@ -148,13 +150,17 @@ export default function AnalyticsMain() {
             )}
         </View>
 
-        <TouchableOpacity style={styles.sessionCard} onPress={() => console.log('Navigate to Session History')}>
-        <View>
+        <TouchableOpacity
+          style={styles.sessionCard}
+          onPress={() => router.push('/Analytics/SessionHistory')}
+        >
+          <View>
             <Text style={styles.sessionTitle}>Session History</Text>
             <Text style={styles.sessionSubtitle}>Take a look at past sessions</Text>
-        </View>
-        <Text style={styles.chevron}></Text> {/* Use an icon if preferred */}
+          </View>
+          <Text style={styles.chevron}>›</Text>
         </TouchableOpacity>
+
 
 
   

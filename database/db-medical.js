@@ -32,4 +32,3 @@ export const getLatestMedicineLog = () => {
   console.log('Latest Medicine Log:', result);
   return result;
 };
-
