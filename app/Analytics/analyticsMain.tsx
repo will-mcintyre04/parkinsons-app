@@ -2,7 +2,7 @@ import { insertMockTremorLogs } from '@/database/InsertMockTremors';
 import { getDb } from '@/database/db-service';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import TremorFrequencyGraph from './TremorFrequencyGraph';
 import TremorAmplitudeGraph from './TremorIntensityGraph';
 
@@ -77,6 +77,11 @@ export default function AnalyticsMain() {
             </TouchableOpacity>
           ))}
         </View>
+
+        {/* Insert Button */}
+        <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>
+          <Text>Insert Mock Data</Text>
+        </TouchableOpacity>
   
         {/* Swipeable Graphs */}
         {since && (
@@ -121,34 +126,77 @@ export default function AnalyticsMain() {
 
         {/* Medicine Picker */}
         <View style={styles.medicinePickerContainer}>
-            <TouchableOpacity
-                onPress={() => setShowPicker((prev) => !prev)}
-                style={styles.dropdownButton}
-            >
-                <Text style={styles.dropdownText}>{selectedMedicineLabel}</Text>
-                <Text style={styles.dropdownArrow}>▼</Text>
-            </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => setShowPicker(true)}
+            style={styles.dropdownButton}
+        >
+            <Text style={styles.dropdownText}>{selectedMedicineLabel}</Text>
+            <Text style={styles.dropdownArrow}>▼</Text>
+        </TouchableOpacity>
 
-            {showPicker && (
-                <ScrollView style={styles.scrollContainer}>
-                {medicines.map((med) => (
-                    <TouchableOpacity
-                    key={med.id}
-                    style={[
-                        styles.medicineItem,
-                        selectedMedicine === med.id && styles.selectedMedicineItem,
-                    ]}
-                    onPress={() => {
-                        setSelectedMedicine(med.id);
-                        setSelectedMedicineLabel(`${med.medication} - ${med.dosage}`);
-                        setShowPicker(false);
-                    }}
-                    >
-                    <Text style={styles.medicineText}>{med.medication} - {med.dosage}</Text>
+        {/* Popup Modal */}
+        <Modal
+        visible={showPicker}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowPicker(false)}
+        >
+        <TouchableWithoutFeedback onPress={() => setShowPicker(false)}>
+            <View style={styles.modalBackdrop}>
+            <TouchableWithoutFeedback>
+                <View style={styles.bottomSheet}>
+                {/* Header */}
+                <View style={styles.sheetHeader}>
+                    <Text style={styles.sheetTitle}>Dosage History</Text>
+                    <TouchableOpacity onPress={() => setShowPicker(false)}>
+                    <Text style={styles.closeButton}>✕</Text>
                     </TouchableOpacity>
-                ))}
+                </View>
+
+                <Text style={styles.sheetSubtitle}>Filter data based on dosage</Text>
+
+                {/* General Dosage Option */}
+                <TouchableOpacity
+                    style={styles.medicineItem}
+                    onPress={() => {
+                    setSelectedMedicine(null);
+                    setSelectedMedicineLabel('General Dosage');
+                    setShowPicker(false);
+                    }}
+                >
+                    <Text style={styles.medicineText}>General Dosage</Text>
+                    <Text style={styles.medicineSubText}>Show tremor data from all sessions</Text>
+                    {selectedMedicine === null && <View style={styles.radioCircle} />}
+                </TouchableOpacity>
+
+                {/* Medicine Options */}
+                <ScrollView style={{ marginTop: 12 }}>
+                    {medicines.map((med) => (
+                    <TouchableOpacity
+                        key={med.id}
+                        style={styles.medicineItem}
+                        onPress={() => {
+                        setSelectedMedicine(med.id);
+                        setSelectedMedicineLabel(`${med.dosage} of  ${med.medication}`);
+                        setShowPicker(false);
+                        }}
+                    >
+                        <Text style={styles.medicineText}>{`${med.dosage} of  ${med.medication}`}</Text>
+                        {selectedMedicine === med.id && <View style={styles.radioCircle} />}
+                    </TouchableOpacity>
+                    ))}
                 </ScrollView>
-            )}
+
+                {/* Exit */}
+                <TouchableOpacity onPress={() => setShowPicker(false)} style={{ marginTop: 20 }}>
+                    <Text style={styles.exitText}>Exit</Text>
+                </TouchableOpacity>
+                </View>
+            </TouchableWithoutFeedback>
+            </View>
+        </TouchableWithoutFeedback>
+        </Modal>
+
         </View>
 
         <TouchableOpacity
@@ -162,10 +210,7 @@ export default function AnalyticsMain() {
           <Text style={styles.chevron}>›</Text>
         </TouchableOpacity>
   
-        {/* Insert Button */}
-        <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>
-          <Text>Insert Mock Data</Text>
-        </TouchableOpacity>
+        
       </View>
     );
 }
@@ -239,28 +284,77 @@ const styles = StyleSheet.create({
         marginTop: 20,
         paddingHorizontal: 16,
       },
-      pickerLabel: {
-        fontSize: 16,
+      modalBackdrop: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+      },
+      bottomSheet: {
+        width: '80%',
+        backgroundColor: '#3A3938',
+        justifyContent: 'center',
+        maxHeight: 400,
+        padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+      },
+      sheetHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      sheetTitle: {
+        fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 8,
-        color: '#333',
+        color: '#fff',
+      },
+      sheetSubtitle: {
+        color: '#D0CDC9',
+        marginTop: 4,
+        marginBottom: 16,
+      },
+      closeButton: {
+        fontSize: 20,
+        color: '#fff',
       },
       medicineItem: {
-        padding: 12,
+        paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#DDD',
+        borderBottomColor: '#555',
+      },
+      medicineText: {
+        color: '#fff',
+        fontSize: 16,
+      },
+      medicineSubText: {
+        fontSize: 12,
+        color: '#AAA',
+      },
+      radioCircle: {
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#fff',
+        position: 'absolute',
+        right: 12,
+        top: '50%',
+        transform: [{ translateY: -8 }],
+      },
+      exitText: {
+        color: '#fff',
+        fontWeight: '600',
+        textAlign: 'center',
+        fontSize: 16,
       },
       selectedMedicineItem: {
         backgroundColor: '#DED7CD',
         borderRadius: 8,
       },
-      medicineText: {
-        fontSize: 16,
-        color: '#333',
-      },
       dropdownButton: {
         flexDirection: 'row',
         alignItems: 'center',
+        alignSelf: 'center',
         justifyContent: 'space-between',
         paddingVertical: 12,
         paddingHorizontal: 16,

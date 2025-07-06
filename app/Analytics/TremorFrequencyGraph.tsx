@@ -1,13 +1,15 @@
 import { getTremorLogsByFilter } from '@/database/db-tremor';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { VictoryAxis, VictoryChart, VictoryLine } from 'victory-native';
 
 const TremorFrequencyGraph = ({ since, medicineId }: { since: string, medicineId: number | null }) => {
     const [data, setData] = useState<{ x: Date; y: number }[]>([]);
+    const [rawData, setRawData] = useState<any[]>([]);
   
     useEffect(() => {
       const logs = getTremorLogsByFilter(since, medicineId);
+      setRawData(logs);
     
       const maxPoints = 40;
       const chunkSize = Math.ceil(logs.length / maxPoints);
@@ -30,7 +32,29 @@ const TremorFrequencyGraph = ({ since, medicineId }: { since: string, medicineId
     const change = data.length > 1 ? ((data[data.length - 1].y - data[0].y) / data[0].y) * 100 : 0;
   
     return (
+      
       <View style={styles.container}>
+        <View style={{ marginTop: 12 }}>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('📊 Graph Data:', data)
+            console.log('📊 Full Filtered Logs:');
+            rawData.forEach((log, i) =>
+              console.log(`#${i + 1}`, {
+                log
+              })
+            );
+          }}
+          style={{
+            marginTop: 8,
+            padding: 10,
+            backgroundColor: '#262626',
+            borderRadius: 6,
+          }}
+        >
+          <Text style={{ color: '#DED7CD', textAlign: 'center' }}>Print All Data</Text>
+        </TouchableOpacity>
+        </View>
         <Text style={styles.title}>Tremor Frequency</Text>
         <Text style={styles.subtitle}>
           Avg score: <Text style={styles.bold}>{avg.toFixed(0)}</Text> •{' '}
