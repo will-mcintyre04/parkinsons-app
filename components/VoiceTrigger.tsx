@@ -1,7 +1,14 @@
 import { startRecording, stopRecording, transcribeWithAssembly } from '@/database/speech-service';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  Easing,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 interface VoiceTriggerProps {
   onTranscript: (text: string) => void;
@@ -11,6 +18,37 @@ interface VoiceTriggerProps {
 export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTriggerProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
+
+  const colorAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(colorAnim, {
+      toValue: isRecording ? 1 : 0,
+      duration: 300,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isRecording]);
+
+  const arcBottomColor = colorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#3D3D3D', '#8F8E8E'],
+  });
+
+  const arcMiddleColor = colorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#2C2C2C', '#A1A1A1'],
+  });
+
+  const arcTopColor = colorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#000000', '#EFE9E1'],
+  });
+
+  const boxColor = colorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#000000', '#EFE9E1'],
+  });
 
   const handleMicPress = async () => {
     try {
@@ -23,7 +61,7 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
         const uri = await stopRecording();
         const text = await transcribeWithAssembly(uri);
         setTranscript(text);
-        onTranscript(text); // 🔥 this is the only thing the parent cares about
+        onTranscript(text);
       }
     } catch (err) {
       console.error(err);
@@ -38,21 +76,21 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
         {transcript && <Text style={styles.transcriptText}>“{transcript}”</Text>}
       </View>
 
-      <View style={styles.bottomStack}>
-        <View style={styles.arcBottom} />
-        <View style={styles.arcMiddle} />
-        <View style={styles.arcTop} />
+      <TouchableOpacity style={styles.bottomStack} onPress={handleMicPress} activeOpacity={1}>
+        <Animated.View style={[styles.arcBottom, { backgroundColor: arcBottomColor }]} />
+        <Animated.View style={[styles.arcMiddle, { backgroundColor: arcMiddleColor }]} />
+        <Animated.View style={[styles.arcTop, { backgroundColor: arcTopColor }]} />
 
-        <TouchableOpacity style={styles.micContainer} onPress={handleMicPress}>
+        <View style={styles.micContainer}>
           <MaterialIcons
-            name={isRecording ? 'stop-circle' : 'mic'}
+            name="mic"
             size={48}
-            color={isRecording ? '#FF6A6A' : '#DED7CD'}
+            color={isRecording ? '#3B3B3B' : '#DED7CD'}
           />
-        </TouchableOpacity>
+        </View>
 
-        <View style={styles.bottomBox} />
-      </View>
+        <Animated.View style={[styles.bottomBox, { backgroundColor: boxColor }]} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -80,7 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     fontFamily: 'System',
     width: 283,
-    textAlign: "center"
+    textAlign: 'center',
   },
   transcriptText: {
     marginTop: 16,
@@ -90,18 +128,12 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center',
   },
-  bottomStack: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
   arcBottom: {
     position: 'absolute',
     bottom: -350,
     width: CIRCLE_SIZE.bottom,
     height: CIRCLE_SIZE.bottom,
     borderRadius: CIRCLE_SIZE.bottom / 2,
-    backgroundColor: '#3D3D3D',
   },
   arcMiddle: {
     position: 'absolute',
@@ -109,7 +141,6 @@ const styles = StyleSheet.create({
     width: CIRCLE_SIZE.middle,
     height: CIRCLE_SIZE.middle,
     borderRadius: CIRCLE_SIZE.middle / 2,
-    backgroundColor: '#2C2C2C',
   },
   arcTop: {
     position: 'absolute',
@@ -117,7 +148,6 @@ const styles = StyleSheet.create({
     width: CIRCLE_SIZE.top,
     height: CIRCLE_SIZE.top,
     borderRadius: CIRCLE_SIZE.top / 2,
-    backgroundColor: '#000000',
   },
   micContainer: {
     position: 'absolute',
@@ -130,8 +160,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 100,
-    backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  bottomStack: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });

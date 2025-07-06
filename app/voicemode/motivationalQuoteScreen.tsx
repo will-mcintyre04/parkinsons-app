@@ -19,11 +19,11 @@ export default function MotivationalQuoteScreen() {
         </View>
 
         <View style={styles.bottomStack}>
-                <View style={styles.arcTop} />
-                <TouchableOpacity style={styles.nextContainer} onPress={handleNext}>
-                  <Text style={styles.nextText}>Next &gt;</Text>
-                </TouchableOpacity>
-            </View>
+          <View style={styles.arcTop} />
+          <TouchableOpacity style={styles.nextContainer} onPress={handleNext}>
+            <Text style={styles.nextText}>Next &gt;</Text>
+          </TouchableOpacity>
+        </View>
         </>
   );
 }
