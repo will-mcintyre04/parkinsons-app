@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { VictoryAxis, VictoryChart, VictoryLine } from 'victory-native';
 
-const TremorAmplitudeGraph = ({ since }: { since: string }) => {
+const TremorIntensityGraph = ({ since }: { since: string }) => {
   const [data, setData] = useState<{ x: Date; y: number }[]>([]);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const TremorAmplitudeGraph = ({ since }: { since: string }) => {
     const averaged = [];
     for (let i = 0; i < logs.length; i += chunkSize) {
       const chunk = logs.slice(i, i + chunkSize);
-      const avgY = chunk.reduce((sum, e) => sum + e.amplitude, 0) / chunk.length;
+      const avgY = chunk.reduce((sum, e) => sum + e.intensity, 0) / chunk.length;
   
       averaged.push({
         x: averaged.length + 1,
@@ -32,49 +32,50 @@ const TremorAmplitudeGraph = ({ since }: { since: string }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tremor Amplitude</Text>
+      <Text style={styles.title}>Tremor Intensity</Text>
       <Text style={styles.subtitle}>
-        Avg amplitude: <Text style={styles.bold}>{avg.toFixed(2)}</Text> •{' '}
+        Avg Intensity: <Text style={styles.bold}>{avg.toFixed(2)}</Text> •{' '}
         <Text style={[styles.change, change < 0 ? styles.negative : styles.positive]}>
           {change < 0 ? 'Down' : 'Up'} {Math.abs(change.toFixed(0))}% {change < 0 ? '↓' : '↑'}
         </Text>
       </Text>
 
       <VictoryChart
-            width={318}
-            height={287}
-            padding={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-            <VictoryAxis
-                style={{
-                axis: { stroke: 'transparent' },
-                ticks: { stroke: 'transparent' },
-                tickLabels: { fill: 'transparent' },
-                grid: { stroke: 'transparent' },
-                }}
-            />
-            <VictoryAxis
-                dependentAxis
-                style={{
-                axis: { stroke: 'transparent' },
-                ticks: { stroke: 'transparent' },
-                tickLabels: { fill: 'transparent' },
-                grid: { stroke: 'transparent' },
-                }}
-            />
-            <VictoryLine
-                data={data}
-                interpolation="linear"
-                style={{
-                data: { stroke: '#000', strokeWidth: 2 },
-                }}
-            />
-            </VictoryChart>
+        width={318}
+        height={287}
+        padding={{ top: 10, bottom: 10, left: 25, right: 10 }}
+        domain={{ y: [0, 100] }} 
+        >
+        <VictoryAxis
+            style={{
+            axis: { stroke: 'transparent' },
+            ticks: { stroke: 'transparent' },
+            tickLabels: { fill: 'transparent' },
+            grid: { stroke: 'transparent' },
+            }}
+        />
+        <VictoryAxis
+          dependentAxis
+          tickFormat={(t) => `${t}`}
+          style={{
+            axis: { stroke: 'transparent' },
+            tickLabels: { fill: '#000', fontSize: 10 },
+            grid: { stroke: '#E5E5E5', strokeDasharray: '4,4' },
+          }}
+        />
+        <VictoryLine
+            data={data}
+            interpolation="linear"
+            style={{
+            data: { stroke: '#000', strokeWidth: 2 },
+            }}
+        />
+      </VictoryChart>
     </View>
   );
 };
 
-export default TremorAmplitudeGraph;
+export default TremorIntensityGraph;
 
 const styles = StyleSheet.create({
   container: {

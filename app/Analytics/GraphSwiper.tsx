@@ -1,6 +1,6 @@
 import { Dimensions, ScrollView, View } from 'react-native';
-import TremorAmplitudeGraph from './TremorAmplitudeGraph';
 import TremorFrequencyGraph from './TremorFrequencyGraph';
+import TremorIntensityGraph from './TremorIntensityGraph';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -17,9 +17,9 @@ export default function GraphSwiper({ since }: { since: string }) {
         <TremorFrequencyGraph since={since} />
       </View>
 
-      {/* Page 2: Amplitude */}
+      {/* Page 2: Intensity */}
       <View style={{ width: screenWidth, alignItems: 'center' }}>
-        <TremorAmplitudeGraph since={since} />
+        <TremorIntensityGraph since={since} />
       </View>
     </ScrollView>
   );

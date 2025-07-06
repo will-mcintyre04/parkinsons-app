@@ -2,8 +2,8 @@ import { insertMockTremorLogs } from '@/database/InsertMockTremors';
 import { getDb } from '@/database/db-service';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import TremorAmplitudeGraph from './TremorAmplitudeGraph';
 import TremorFrequencyGraph from './TremorFrequencyGraph';
+import TremorAmplitudeGraph from './TremorIntensityGraph';
 
 type Medicine = { id: number; medication: string; dosage: string };
 
@@ -148,6 +148,15 @@ export default function AnalyticsMain() {
             )}
         </View>
 
+        <TouchableOpacity style={styles.sessionCard} onPress={() => console.log('Navigate to Session History')}>
+        <View>
+            <Text style={styles.sessionTitle}>Session History</Text>
+            <Text style={styles.sessionSubtitle}>Take a look at past sessions</Text>
+        </View>
+        <Text style={styles.chevron}></Text> {/* Use an icon if preferred */}
+        </TouchableOpacity>
+
+
   
         {/* Insert Button */}
         <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>
@@ -273,5 +282,34 @@ const styles = StyleSheet.create({
         backgroundColor: '#F6EEE3',
         padding: 8,
       },
+      sessionCard: {
+        backgroundColor: '#D6D0C8',
+        borderRadius: 16,
+        padding: 20,
+        marginHorizontal: 16,
+        marginTop: 24,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      sessionTitle: {
+        fontSize: 18,
+        fontWeight: '800',
+        color: '#1C1C1C',
+        fontFamily: 'SFProDisplay-Bold',
+      },
+      sessionSubtitle: {
+        fontSize: 14,
+        color: '#1C1C1C',
+        fontFamily: 'SFProDisplay-Regular',
+        opacity: 0.8,
+        marginTop: 4,
+      },
+      chevron: {
+        fontSize: 24,
+        color: '#1C1C1C',
+        fontWeight: '500',
+      },
+      
       
   });

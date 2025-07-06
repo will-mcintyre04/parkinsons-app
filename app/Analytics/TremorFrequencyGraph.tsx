@@ -43,7 +43,8 @@ const TremorFrequencyGraph = ({ since }: { since: string }) => {
         <VictoryChart
             width={318}
             height={287}
-            padding={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            padding={{ top: 10, bottom: 10, left: 25, right: 10 }}
+            domain={{ y: [0, 12] }} 
             >
             <VictoryAxis
                 style={{
@@ -54,13 +55,14 @@ const TremorFrequencyGraph = ({ since }: { since: string }) => {
                 }}
             />
             <VictoryAxis
-                dependentAxis
-                style={{
+              dependentAxis
+              tickValues={[0, 2, 4, 6, 8, 10, 12]}
+              tickFormat={(t) => `${t}`}
+              style={{
                 axis: { stroke: 'transparent' },
-                ticks: { stroke: 'transparent' },
-                tickLabels: { fill: 'transparent' },
-                grid: { stroke: 'transparent' },
-                }}
+                tickLabels: { fill: '#000', fontSize: 10 },
+                grid: { stroke: '#E5E5E5', strokeDasharray: '4,4' },
+              }}
             />
             <VictoryLine
                 data={data}
