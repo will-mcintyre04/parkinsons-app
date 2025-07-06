@@ -31,5 +31,21 @@ export const getTremorLogsSince = (sinceTimestamp: string) => {
       [sinceTimestamp]
     );
     return result;
-  };
+};
+
+export const getTremorLogsByFilter = (since: string, medicineId: number | null) => {
+    const db = getDb();
+
+    if (medicineId) {
+        return db.getAllSync(
+        `SELECT * FROM TremorLogs WHERE timestamp >= ? AND medicine_log_id = ? ORDER BY timestamp ASC`,
+        [since, medicineId]
+        );
+    } else {
+        return db.getAllSync(
+        `SELECT * FROM TremorLogs WHERE timestamp >= ? ORDER BY timestamp ASC`,
+        [since]
+        );
+    }
+};
   
