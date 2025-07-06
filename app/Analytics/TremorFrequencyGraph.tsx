@@ -8,11 +8,22 @@ const TremorFrequencyGraph = ({ since }: { since: string }) => {
   
     useEffect(() => {
       const logs = getTremorLogsSince(since);
-      const formatted = logs.map((entry) => ({
-        x: new Date(entry.timestamp),
-        y: entry.frequency,
-      }));
-      setData(formatted);
+    
+      const maxPoints = 40;
+      const chunkSize = Math.ceil(logs.length / maxPoints);
+    
+      const averaged = [];
+      for (let i = 0; i < logs.length; i += chunkSize) {
+        const chunk = logs.slice(i, i + chunkSize);
+        const avgY = chunk.reduce((sum, e) => sum + e.frequency, 0) / chunk.length;
+    
+        averaged.push({
+          x: averaged.length + 1,
+          y: parseFloat(avgY.toFixed(2)),
+        });
+      }
+    
+      setData(averaged);
     }, [since]);
   
     const avg = data.length ? data.reduce((sum, d) => sum + d.y, 0) / data.length : 0;
