@@ -1,4 +1,3 @@
-
 import FinanceModeIcon from '@/assets/FinanceMode';
 import LiftToTalkIcon from '@/assets/LiftToTalk';
 import SettingsIcon from '@/assets/ManageAcounts';
@@ -135,3 +134,4 @@ export default function PatientHomeScreen() {
     </View>
   );
 }
+

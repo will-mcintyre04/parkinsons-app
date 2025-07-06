@@ -1,4 +1,3 @@
-import { insertMockTremorLogs } from '@/database/InsertMockTremors';
 import { getDb } from '@/database/db-service';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -79,9 +78,9 @@ export default function AnalyticsMain() {
         </View>
 
         {/* Insert Button */}
-        <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>
+        {/* <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>
           <Text>Insert Mock Data</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
   
         {/* Swipeable Graphs */}
         {since && (
@@ -221,6 +220,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: '800',
         color: 'black',
+        marginLeft: 20,
     },
     bubbleRow: {
         flexDirection: 'row',
@@ -254,8 +254,7 @@ const styles = StyleSheet.create({
         color: '#DED7CD',
       },
       Container:{
-        backgroundColor: '#DED7CD',
-        marginTop: -15,
+        marginTop: 70,
         alignSelf: 'stretch',
       },
       pagination: {
