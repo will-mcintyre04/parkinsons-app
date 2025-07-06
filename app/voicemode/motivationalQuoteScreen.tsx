@@ -16,29 +16,30 @@ export default function MotivationalQuoteScreen() {
     <>
       <View style={styles.container}>
         <Text style={styles.quote}>{quote || 'Small wins add up, great job'}</Text>
-        </View>
+      </View>
 
-        <View style={styles.bottomStack}>
-          <View style={styles.arcTop} />
-          <TouchableOpacity style={styles.nextContainer} onPress={handleNext}>
-            <Text style={styles.nextText}>Next &gt;</Text>
-          </TouchableOpacity>
+      <TouchableOpacity style={styles.bottomStack} onPress={handleNext} activeOpacity={0.6}>
+        <View style={styles.arcTop} />
+        <View style={styles.nextContainer}>
+          <Text style={styles.nextText}>Next &gt;</Text>
         </View>
+      </TouchableOpacity>
         </>
   );
 }
 
 
 const CIRCLE_SIZE = {
-    bottom: 500,
-    middle: 460,
-    top: 420,
+    top: 600,
   };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#EFE9E1',
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 24,
   },
   quote: {
     fontSize: 32,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   },
   arcTop: {
     position: 'absolute',
-    bottom: -130,
+    bottom: -250,
     width: CIRCLE_SIZE.top,
     height: CIRCLE_SIZE.top,
     borderRadius: CIRCLE_SIZE.top / 2,
