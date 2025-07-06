@@ -20,6 +20,15 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
   const [transcript, setTranscript] = useState('');
 
   const colorAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: isRecording ? 1.3 : 1, // grow to 130% while recording
+      friction: 4,
+      useNativeDriver: true,
+    }).start();
+  }, [isRecording]);
 
   useEffect(() => {
     Animated.timing(colorAnim, {
@@ -42,12 +51,12 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
 
   const arcTopColor = colorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#000000', '#EFE9E1'],
+    outputRange: ['#000000', '#CCCCCC'],
   });
 
   const boxColor = colorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#000000', '#EFE9E1'],
+    outputRange: ['#000000', '#CCCCCC'],
   });
 
   const handleMicPress = async () => {
@@ -81,13 +90,13 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
         <Animated.View style={[styles.arcMiddle, { backgroundColor: arcMiddleColor }]} />
         <Animated.View style={[styles.arcTop, { backgroundColor: arcTopColor }]} />
 
-        <View style={styles.micContainer}>
+        <Animated.View style={[styles.micContainer, { transform: [{ scale: scaleAnim }] }]}>
           <MaterialIcons
             name="mic"
             size={48}
             color={isRecording ? '#3B3B3B' : '#DED7CD'}
           />
-        </View>
+        </Animated.View>
 
         <Animated.View style={[styles.bottomBox, { backgroundColor: boxColor }]} />
       </TouchableOpacity>
