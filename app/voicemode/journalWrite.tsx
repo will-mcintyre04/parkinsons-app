@@ -5,27 +5,27 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function VoicePromptScreen() {
   const [time, setTime] = useState('');
-  const [journal, setJournal] = useState('');
+  const [journal, setJournal] = useState(''); // <-- Add this
   const router = useRouter();
 
-  const {frequency, intensity} = useLocalSearchParams<{
+  const { frequency, intensity } = useLocalSearchParams<{
     frequency?: string,
     intensity?: string
   }>();
 
   const handleTranscript = (text: string) => {
-    setJournal(text);
+    setJournal(text); // <-- Update the state
     setTimeout(() => {
-        router.push({
-            pathname: '/voicemode/databaseDone',
-            params: {
-                journal,
-                frequency,
-                intensity,
-            },
-        });
-    }, 2000)
-  }
+      router.push({
+        pathname: '/voicemode/databaseDone',
+        params: {
+          journal: text,
+          frequency,
+          intensity,
+        },
+      });
+    }, 2000);
+  };
 
   useEffect(() => {
     const now = new Date();
@@ -42,7 +42,7 @@ export default function VoicePromptScreen() {
       <Text style={styles.time}>{time}</Text>
       <Text style={styles.message}>{journal}</Text>
 
-      <VoiceTrigger onTranscript={handleTranscript} prompt="" printTranscript={false}></VoiceTrigger>
+      <VoiceTrigger onTranscript={handleTranscript} prompt="" printTranscript={false} />
     </View>
   );
 }
@@ -87,4 +87,3 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
-

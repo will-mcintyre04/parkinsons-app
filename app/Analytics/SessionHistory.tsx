@@ -1,22 +1,22 @@
 // components/SessionHistory.tsx
-import { getAllMedicineLogs } from '@/database/db-medical'; // adjust if file is elsewhere
+import { getAllTremorSessionsWithMedication } from '@/database/db-tremor';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-type MedicineLog = {
-  id: number;
+type Session = {
+  tremor_id: number;
   timestamp: string;
   medication: string;
   dosage: string;
 };
 
 export default function SessionHistory() {
-  const [logs, setLogs] = useState<MedicineLog[]>([]);
+  const [logs, setLogs] = useState<Session[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const data = getAllMedicineLogs();
+    const data = getAllTremorSessionsWithMedication();
     setLogs(data || []);
   }, []);
 
@@ -38,18 +38,17 @@ export default function SessionHistory() {
         <ScrollView>
           {logs.map((log) => (
             <TouchableOpacity
-              key={log.id} 
+              key={log.tremor_id}
               style={styles.entry}
               onPress={() => {
                 router.push({
-                    pathname: '/Analytics/SessionDetail',
-                    params: {
-                        medicineLogId: log.id.toString(),
-                    },
+                  pathname: '/Analytics/SessionDetail',
+                  params: {
+                    tremor_id: log.tremor_id.toString(), // assuming tremor_id is used
+                  },
                 });
-              }
-              }
-              >
+              }}
+            >
               <View>
                 <Text style={styles.date}>{formatDate(log.timestamp)}</Text>
                 <Text style={styles.details}>

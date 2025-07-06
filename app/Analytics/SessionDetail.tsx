@@ -1,4 +1,4 @@
-import { getTremorLogByMedicineLogId } from '@/database/db-tremor';
+import { getTremorLogById } from '@/database/db-tremor';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -12,14 +12,15 @@ type TremorLog = {
 };
 
 export default function SessionDetail() {
-  const { medicineLogId } = useLocalSearchParams<{ medicineLogId: string }>();
+  const { tremor_id } = useLocalSearchParams<{ tremor_id: string }>();
   const [log, setLog] = useState<TremorLog | null>(null);
 
   useEffect(() => {
-    if (!medicineLogId) return;
-    const result = getTremorLogByMedicineLogId(Number(medicineLogId));
+    if (!tremor_id) return;
+    const result = getTremorLogById(Number(tremor_id));
+    console.log(result)
     if (result) setLog(result);
-  }, [medicineLogId]);
+  }, [tremor_id]);
 
   if (!log) {
     return (

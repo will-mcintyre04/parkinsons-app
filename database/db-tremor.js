@@ -8,7 +8,7 @@ export const addTremorLog = (timestamp, frequency, intensity, journal, medicineL
     [timestamp, frequency, intensity, journal, medicineLogId]
   );
 
-  console.log('Tremor log inserted');
+  console.log('Tremor log inserted:', [timestamp, frequency, intensity, journal, medicineLogId]);
 };
 
 export const deleteTremorLog = (id) => {
@@ -23,6 +23,29 @@ export const getAllTremorLogs = () => {
   console.log('📊 Tremor Logs:', result);
   return result;
 };
+
+// In your db-service or db-tremor.ts
+export const getAllTremorSessionsWithMedication = () => {
+  const db = getDb();
+
+  const result = db.getAllSync(`
+    SELECT 
+      TremorLogs.id as tremor_id,
+      TremorLogs.timestamp,
+      TremorLogs.frequency,
+      TremorLogs.intensity,
+      TremorLogs.journal,
+      MedicineLogs.medication,
+      MedicineLogs.dosage
+    FROM TremorLogs
+    LEFT JOIN MedicineLogs ON TremorLogs.medicine_log_id = MedicineLogs.id
+    ORDER BY TremorLogs.timestamp DESC
+  `);
+
+  console.log('🧾 Tremor Sessions with Medication:', result);
+  return result;
+};
+
 
 export const getTremorLogsSince = (sinceTimestamp: string) => {
     const db = getDb();
@@ -49,11 +72,11 @@ export const getTremorLogsByFilter = (since: string, medicineId: number | null) 
     }
 };
 
-export const getTremorLogByMedicineLogId = (medicineLogId: number) => {
+export const getTremorLogById = (tremor_id: number) => {
   const db = getDb();
   return db.getFirstSync(
-    `SELECT * FROM TremorLogs WHERE medicine_log_id = ? ORDER BY timestamp DESC LIMIT 1`,
-    [medicineLogId]
+    `SELECT * FROM TremorLogs WHERE id = ?`,
+    [tremor_id]
   );
 };
 

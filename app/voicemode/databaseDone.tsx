@@ -12,6 +12,7 @@ export default function DatabaseDone() {
     intensity?: string;
     journal?: string;
   }>();
+  console.log(journal)
 
   const router = useRouter();
 

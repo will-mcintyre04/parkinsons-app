@@ -16,7 +16,7 @@ interface VoiceTriggerProps {
   printTranscript?: boolean
 }
 
-export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.', printTranscript = true }: VoiceTriggerProps) => {
+export const VoiceTrigger = ({ onTranscript, prompt = 'tap to talk.', printTranscript = true }: VoiceTriggerProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
 
