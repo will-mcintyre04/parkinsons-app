@@ -1,9 +1,31 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { VoiceTrigger } from '@/components/VoiceTrigger';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function VoicePromptScreen() {
   const [time, setTime] = useState('');
+  const [journal, setJournal] = useState('');
+  const router = useRouter();
+
+  const {frequency, amplitude} = useLocalSearchParams<{
+    frequency?: string,
+    amplitude?: string
+  }>();
+
+  const handleTranscript = (text: string) => {
+    setJournal(text);
+    setTimeout(() => {
+        router.push({
+            pathname: '/voicemode/databaseDone',
+            params: {
+                journal,
+                frequency,
+                amplitude,
+            },
+        });
+    }, 2000)
+  }
 
   useEffect(() => {
     const now = new Date();
@@ -18,11 +40,9 @@ export default function VoicePromptScreen() {
     <View style={styles.container}>
       <Text style={styles.date}>July 5</Text>
       <Text style={styles.time}>{time}</Text>
-      <Text style={styles.message}>Awesome, I’m listening</Text>
+      <Text style={styles.message}>{journal}</Text>
 
-      <TouchableOpacity style={styles.micButton}>
-        <MaterialIcons name="keyboard-voice" size={32} color="#fff" />
-      </TouchableOpacity>
+      <VoiceTrigger onTranscript={handleTranscript} prompt=""></VoiceTrigger>
     </View>
   );
 }

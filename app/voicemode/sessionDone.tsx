@@ -48,7 +48,18 @@ export default function SteadyDone() {
       </View>
 
       {graphData.length > 0 && mode ==='User' && (
-         <TouchableOpacity style={styles.bottomStack} onPress={() => {router.push('/voicemode/journalPrompt')}}>
+         <TouchableOpacity
+          style={styles.bottomStack}
+          onPress={() => {
+            router.push({
+              pathname: '/voicemode/journalPrompt',
+              params: {
+                frequency: freq ?? '0',
+                amplitude: std ?? '0',
+              },
+            });
+          }}
+          >
             <View style={styles.arcTop} />
             <View style={styles.nextContainer}>
             <Text style={styles.nextText}>Next</Text>

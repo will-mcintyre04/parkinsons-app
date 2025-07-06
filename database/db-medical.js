@@ -23,3 +23,13 @@ export const getAllMedicineLogs = () => {
   console.log('Medicine Logs:', result);
   return result;
 };
+
+export const getLatestMedicineLog = () => {
+  const db = getDb();
+  const result = db.getFirstSync(
+    `SELECT * FROM MedicineLogs ORDER BY timestamp DESC LIMIT 1`
+  );
+  console.log('Latest Medicine Log:', result);
+  return result;
+};
+
