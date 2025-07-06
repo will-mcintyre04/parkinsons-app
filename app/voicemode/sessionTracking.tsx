@@ -26,7 +26,7 @@ export default function SteadyTracking() {
       router.push({
         pathname: '/voicemode/sessionDone',
         params: {
-          std: tremorData.std?.toFixed(2),
+          intensity: tremorData.intensity?.toFixed(2),
           freq: tremorData.dominantFreq?.toFixed(2),
           graph: JSON.stringify(tremorData.graphData),
           fft: JSON.stringify(tremorData.fftData),

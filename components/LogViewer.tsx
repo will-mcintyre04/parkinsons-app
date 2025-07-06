@@ -12,7 +12,7 @@ interface TremorLog {
   id: number;
   timestamp: string;
   frequency: number;
-  amplitude: number;
+  intensity: number;
   journal?: string;
   medicine_log_id: number | null;
 }
@@ -60,7 +60,7 @@ export default function LogViewer() {
     const note = newNotes[medId]?.trim() || '';
 
     if (isNaN(freq) || isNaN(amp)) {
-      Alert.alert('Invalid Input', 'Please enter valid numbers for frequency and amplitude');
+      Alert.alert('Invalid Input', 'Please enter valid numbers for frequency and intensity');
       return;
     }
 
@@ -95,7 +95,7 @@ export default function LogViewer() {
                 log.tremors.map((tremor) => (
                   <View key={tremor.id} style={styles.tremorRow}>
                     <ThemedText>
-                      • {tremor.frequency} Hz, {tremor.amplitude} amp
+                      • {tremor.frequency} Hz, {tremor.intensity} amp
                       {'\n'}🕒 {new Date(tremor.timestamp).toLocaleString()}
                       {tremor.journal ? `\n📝 ${tremor.journal}` : ''}
                     </ThemedText>

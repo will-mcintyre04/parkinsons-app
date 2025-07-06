@@ -21,7 +21,7 @@ export const initDatabase = () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT NOT NULL,
         frequency REAL NOT NULL,
-        amplitude REAL NOT NULL,
+        intensity REAL NOT NULL,
         journal TEXT,
         medicine_log_id INTEGER,
         FOREIGN KEY (medicine_log_id) REFERENCES MedicineLogs(id)
@@ -74,7 +74,7 @@ export const resetDatabase = () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT NOT NULL,
         frequency REAL NOT NULL,
-        amplitude REAL NOT NULL,
+        intensity REAL NOT NULL,
         journal TEXT,
         medicine_log_id INTEGER,
         FOREIGN KEY (medicine_log_id) REFERENCES MedicineLogs(id)

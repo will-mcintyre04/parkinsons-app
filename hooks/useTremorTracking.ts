@@ -47,7 +47,7 @@ export function useTremorTracking() {
 
 
   const start = (): Promise<{
-    std: number | null;
+    intensity: number | null;
     dominantFreq: number | null;
     graphData: { x: number; y: number }[];
     fftData: { x: number; y: number }[];
@@ -69,9 +69,20 @@ export function useTremorTracking() {
             subscriptionRef.current?.remove();
             const windowed = buffer.slice(-WINDOW_SIZE);
             const std = computeSTD(windowed);
+            console.log(std)
+            
+            const minStd = 0;     // best possible
+            const maxStd = 5;     // worst acceptable (adjust based on data)
+
+            const clamped = Math.min(Math.max(std, minStd), maxStd);
+            const normalized = (clamped - minStd) / (maxStd - minStd);
+            console.log(normalized)
+
+            const intensity = Math.round(normalized * 100);
+
             const { dominantFreq, fft } = computeFFTExtended(windowed, SAMPLE_RATE);
             setIsMeasuring(false);
-            resolve({ std, dominantFreq, graphData, fftData: fft });
+            resolve({ intensity, dominantFreq, graphData, fftData: fft });
         }
         });
     });

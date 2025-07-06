@@ -15,9 +15,9 @@ const SAMPLE_RATE = 200;
 const screenWidth = Dimensions.get('window').width;
 const chartWidth = screenWidth - 32;
 
-export default function SteadyDone() {
-  const { std, freq, graph, fft } = useLocalSearchParams<{
-    std?: string;
+export default function SessionDone() {
+  const { intensity, freq, graph, fft } = useLocalSearchParams<{
+    intensity?: string;
     freq?: string;
     graph?: string;
     fft?: string;
@@ -43,7 +43,7 @@ export default function SteadyDone() {
       <View style={styles.contentWrapper}>
         <MaterialIcons name="check-circle" size={80} color="#1C1C1C" />
         <Text style={styles.title}>Steady check done</Text>
-        <Text style={styles.score}>Tremor STD: {std ?? '—'}</Text>
+        <Text style={styles.score}>Tremor intensity: {intensity ?? '—'}</Text>
         <Text style={styles.score}>Dominant Freq: {freq ?? '—'} Hz</Text>
       </View>
 
@@ -56,7 +56,7 @@ export default function SteadyDone() {
               pathname: '/voicemode/journalPrompt',
               params: {
                 frequency: freq ?? '0',
-                amplitude: std ?? '0',
+                intensity: intensity ?? '0',
               },
             });
           }}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    paddingTop: 20,
+    paddingTop: 40,
     paddingLeft: 10
   },
   modeToggle: {

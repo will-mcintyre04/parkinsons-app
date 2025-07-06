@@ -7,19 +7,19 @@ import { getLatestMedicineLog } from '@/database/db-medical'; // make sure this 
 import { addTremorLog } from '@/database/db-tremor';
 
 export default function DatabaseDone() {
-  const { frequency, amplitude, journal } = useLocalSearchParams<{
+  const { frequency, intensity, journal } = useLocalSearchParams<{
     frequency?: string;
-    amplitude?: string;
+    intensity?: string;
     journal?: string;
   }>();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (frequency && amplitude) {
+    if (frequency && intensity) {
       const timestamp = new Date().toISOString();
       const freqVal = parseFloat(frequency);
-      const ampVal = parseFloat(amplitude);
+      const ampVal = parseFloat(intensity);
       const journalText = journal ?? '';
 
       // Get the latest med log ID
@@ -32,7 +32,7 @@ export default function DatabaseDone() {
         router.push('/PatientHomeScreen')
       }, 3000)
     }
-  }, [frequency, amplitude, journal, router]);
+  }, [frequency, intensity, journal, router]);
 
   return (
     <View style={styles.container}>

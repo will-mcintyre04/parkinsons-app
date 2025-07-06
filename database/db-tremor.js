@@ -1,11 +1,11 @@
 import { getDb } from '../database/db-service';
 
-export const addTremorLog = (timestamp, frequency, amplitude, journal, medicineLogId) => {
+export const addTremorLog = (timestamp, frequency, intensity, journal, medicineLogId) => {
   const db = getDb();
 
   db.runSync(
-    `INSERT INTO TremorLogs (timestamp, frequency, amplitude, journal, medicine_log_id) VALUES (?, ?, ?, ?, ?)`,
-    [timestamp, frequency, amplitude, journal, medicineLogId]
+    `INSERT INTO TremorLogs (timestamp, frequency, intensity, journal, medicine_log_id) VALUES (?, ?, ?, ?, ?)`,
+    [timestamp, frequency, intensity, journal, medicineLogId]
   );
 
   console.log('Tremor log inserted');

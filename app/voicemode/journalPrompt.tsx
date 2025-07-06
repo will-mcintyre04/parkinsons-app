@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
   
   export default function JournalPrompt() {
     const router = useRouter();
-    const { frequency, amplitude } = useLocalSearchParams<{ frequency?: string; amplitude?: string }>();
+    const { frequency, intensity } = useLocalSearchParams<{ frequency?: string; intensity?: string }>();
 
     const handleTranscript = (text: string) => {
       const lower = text.toLowerCase();
@@ -16,7 +16,7 @@ import { StatusBar } from 'expo-status-bar';
           pathname: '/voicemode/journalWrite',
           params: {
             frequency,
-            amplitude,
+            intensity,
           },
         });
       } else if (lower.includes('no')) {
@@ -24,7 +24,7 @@ import { StatusBar } from 'expo-status-bar';
           pathname: '/voicemode/databaseDone',
           params: {
             frequency,
-            amplitude,
+            intensity,
           },
         });
       } else {

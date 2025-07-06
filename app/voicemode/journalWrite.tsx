@@ -8,9 +8,9 @@ export default function VoicePromptScreen() {
   const [journal, setJournal] = useState('');
   const router = useRouter();
 
-  const {frequency, amplitude} = useLocalSearchParams<{
+  const {frequency, intensity} = useLocalSearchParams<{
     frequency?: string,
-    amplitude?: string
+    intensity?: string
   }>();
 
   const handleTranscript = (text: string) => {
@@ -21,7 +21,7 @@ export default function VoicePromptScreen() {
             params: {
                 journal,
                 frequency,
-                amplitude,
+                intensity,
             },
         });
     }, 2000)
