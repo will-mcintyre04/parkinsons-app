@@ -33,7 +33,7 @@ export default function SteadyDone() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} scrollEnabled={false}>
       <View style={styles.modeSwitchRow}>
         <TouchableOpacity style={styles.modeToggle} onPress={toggleMode}>
           <MaterialIcons name="swap-horiz" size={20} color="black" />
@@ -50,6 +50,7 @@ export default function SteadyDone() {
       {graphData.length > 0 && mode ==='User' && (
          <TouchableOpacity
           style={styles.bottomStack}
+          activeOpacity={0.6}
           onPress={() => {
             router.push({
               pathname: '/voicemode/journalPrompt',
@@ -62,7 +63,7 @@ export default function SteadyDone() {
           >
             <View style={styles.arcTop} />
             <View style={styles.nextContainer}>
-            <Text style={styles.nextText}>Next</Text>
+            <Text style={styles.nextText}>Next &gt;</Text>
             </View>
           </TouchableOpacity>
       )}
@@ -110,7 +111,7 @@ export default function SteadyDone() {
 }
 
 const CIRCLE_SIZE = {
-    top: 420,
+    top: 600,
   };
 
 const styles = StyleSheet.create({
@@ -125,6 +126,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    paddingTop: 20,
+    paddingLeft: 10
   },
   modeToggle: {
     flexDirection: 'row',
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     alignItems: 'center',
     backgroundColor: '#EFE9E1',
-    flexGrow:1
+    flexGrow:1,
   },
   title: {
     fontSize: 24,
@@ -173,13 +176,13 @@ const styles = StyleSheet.create({
   },
   arcTop: {
     position: 'absolute',
-    bottom: -130,
+    bottom: -250,
     width: CIRCLE_SIZE.top,
     height: CIRCLE_SIZE.top,
     borderRadius: CIRCLE_SIZE.top / 2,
     backgroundColor: '#000000',
   },
-    nextText: {
+  nextText: {
     fontFamily: 'SFProDisplay-Black',
     fontWeight: '800',
     fontSize: 32,

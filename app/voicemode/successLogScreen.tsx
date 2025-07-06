@@ -29,16 +29,6 @@ export default function SuccessLogScreen() {
         }
       }, [medication, dosage]);
 
-      useEffect(() => {
-        const timeout = setTimeout(() => {
-            router.push({
-                pathname: '/voicemode/motivationalQuoteScreen',
-                params: { quote },
-              });
-        }, 5000);
-        return () => clearTimeout(timeout);
-      }, []);
-
       const handleNext = () => {
         router.push({
           pathname: '/voicemode/motivationalQuoteScreen',
@@ -58,20 +48,18 @@ export default function SuccessLogScreen() {
         </Text>
       </View>
   
-      <View style={styles.bottomStack}>
+      <TouchableOpacity style={styles.bottomStack} onPress={handleNext} activeOpacity={0.6}>
         <View style={styles.arcTop} />
-        <TouchableOpacity style={styles.nextContainer} onPress={handleNext}>
+        <View style={styles.nextContainer}>
           <Text style={styles.nextText}>Next &gt;</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
     </>
   );
 }  
 
 const CIRCLE_SIZE = {
-    bottom: 500,
-    middle: 460,
-    top: 420,
+    top: 600,
   };
 
 const styles = StyleSheet.create({
@@ -114,7 +102,7 @@ const styles = StyleSheet.create({
   },
   arcTop: {
     position: 'absolute',
-    bottom: -130,
+    bottom: -250,
     width: CIRCLE_SIZE.top,
     height: CIRCLE_SIZE.top,
     borderRadius: CIRCLE_SIZE.top / 2,
