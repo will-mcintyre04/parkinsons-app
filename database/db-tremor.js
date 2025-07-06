@@ -48,4 +48,13 @@ export const getTremorLogsByFilter = (since: string, medicineId: number | null) 
         );
     }
 };
+
+export const getTremorLogByMedicineLogId = (medicineLogId: number) => {
+  const db = getDb();
+  return db.getFirstSync(
+    `SELECT * FROM TremorLogs WHERE medicine_log_id = ? ORDER BY timestamp DESC LIMIT 1`,
+    [medicineLogId]
+  );
+};
+
   

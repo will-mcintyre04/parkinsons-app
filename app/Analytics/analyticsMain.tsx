@@ -161,9 +161,6 @@ export default function AnalyticsMain() {
           </View>
           <Text style={styles.chevron}>›</Text>
         </TouchableOpacity>
-
-
-
   
         {/* Insert Button */}
         <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>

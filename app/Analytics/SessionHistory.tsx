@@ -1,7 +1,8 @@
 // components/SessionHistory.tsx
 import { getAllMedicineLogs } from '@/database/db-medical'; // adjust if file is elsewhere
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type MedicineLog = {
   id: number;
@@ -12,6 +13,7 @@ type MedicineLog = {
 
 export default function SessionHistory() {
   const [logs, setLogs] = useState<MedicineLog[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const data = getAllMedicineLogs();
@@ -35,7 +37,19 @@ export default function SessionHistory() {
       <View style={styles.card}>
         <ScrollView>
           {logs.map((log) => (
-            <View key={log.id} style={styles.entry}>
+            <TouchableOpacity
+              key={log.id} 
+              style={styles.entry}
+              onPress={() => {
+                router.push({
+                    pathname: '/Analytics/SessionDetail',
+                    params: {
+                        medicineLogId: log.id.toString(),
+                    },
+                });
+              }
+              }
+              >
               <View>
                 <Text style={styles.date}>{formatDate(log.timestamp)}</Text>
                 <Text style={styles.details}>
@@ -43,7 +57,7 @@ export default function SessionHistory() {
                 </Text>
               </View>
               <Text style={styles.arrow}>›</Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
