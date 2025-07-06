@@ -33,7 +33,7 @@ export default function SessionDone() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} scrollEnabled={false}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.modeSwitchRow}>
         <TouchableOpacity style={styles.modeToggle} onPress={toggleMode}>
           <MaterialIcons name="swap-horiz" size={20} color="black" />
