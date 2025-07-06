@@ -42,7 +42,7 @@ export default function VoicePromptScreen() {
       <Text style={styles.time}>{time}</Text>
       <Text style={styles.message}>{journal}</Text>
 
-      <VoiceTrigger onTranscript={handleTranscript} prompt=""></VoiceTrigger>
+      <VoiceTrigger onTranscript={handleTranscript} prompt="" printTranscript={false}></VoiceTrigger>
     </View>
   );
 }

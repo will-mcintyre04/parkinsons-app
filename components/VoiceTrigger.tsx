@@ -13,9 +13,10 @@ import {
 interface VoiceTriggerProps {
   onTranscript: (text: string) => void;
   prompt?: string;
+  printTranscript?: boolean
 }
 
-export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTriggerProps) => {
+export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.', printTranscript = true }: VoiceTriggerProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
 
@@ -82,7 +83,7 @@ export const VoiceTrigger = ({ onTranscript, prompt = 'talk anytime.' }: VoiceTr
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{prompt}</Text>
-        {transcript && <Text style={styles.transcriptText}>“{transcript}”</Text>}
+        {transcript && printTranscript &&<Text style={styles.transcriptText}>“{transcript}”</Text>}
       </View>
 
       <TouchableOpacity style={styles.bottomStack} onPress={handleMicPress} activeOpacity={1}>
