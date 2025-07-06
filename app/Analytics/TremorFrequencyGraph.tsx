@@ -1,13 +1,13 @@
-import { getTremorLogsSince } from '@/database/db-tremor';
+import { getTremorLogsByFilter } from '@/database/db-tremor';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { VictoryAxis, VictoryChart, VictoryLine } from 'victory-native';
 
-const TremorFrequencyGraph = ({ since }: { since: string }) => {
+const TremorFrequencyGraph = ({ since, medicineId }: { since: string, medicineId: number | null }) => {
     const [data, setData] = useState<{ x: Date; y: number }[]>([]);
   
     useEffect(() => {
-      const logs = getTremorLogsSince(since);
+      const logs = getTremorLogsByFilter(since, medicineId);
     
       const maxPoints = 40;
       const chunkSize = Math.ceil(logs.length / maxPoints);
@@ -24,7 +24,7 @@ const TremorFrequencyGraph = ({ since }: { since: string }) => {
       }
     
       setData(averaged);
-    }, [since]);
+    }, [since, medicineId]);    
   
     const avg = data.length ? data.reduce((sum, d) => sum + d.y, 0) / data.length : 0;
     const change = data.length > 1 ? ((data[data.length - 1].y - data[0].y) / data[0].y) * 100 : 0;

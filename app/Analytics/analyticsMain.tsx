@@ -94,12 +94,13 @@ export default function AnalyticsMain() {
             >
             {/* Frequency Graph */}
             <View style={{ width: screenWidth, alignItems: 'center' }}>
-                <TremorFrequencyGraph since={since} />
+                <TremorFrequencyGraph since={since} medicineId={selectedMedicine} />
             </View>
+
 
             {/* Amplitude Graph */}
             <View style={{ width: screenWidth, alignItems: 'center' }}>
-                <TremorAmplitudeGraph since={since} />
+                <TremorAmplitudeGraph since={since} medicineId={selectedMedicine} />
             </View>
             </ScrollView>
 
