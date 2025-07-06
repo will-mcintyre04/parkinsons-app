@@ -1,14 +1,26 @@
 import { insertMockTremorLogs } from '@/database/InsertMockTremors';
-import React, { useState } from 'react';
+import { getDb } from '@/database/db-service';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from '../(tabs)/PatientHomeStyles';
 import TremorAmplitudeGraph from './TremorAmplitudeGraph';
 import TremorFrequencyGraph from './TremorFrequencyGraph';
 
+type Medicine = { id: number; medication: string; dosage: string };
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function AnalyticsMain() {
+    const [medicines, setMedicines] = useState<Medicine[]>([]);
+    const [selectedMedicine, setSelectedMedicine] = useState<number | null>(null);
+    const [selectedMedicineLabel, setSelectedMedicineLabel] = useState('General Dosage');
+    const [showPicker, setShowPicker] = useState(false); 
+
+      useEffect(() => {
+        const db = getDb();
+        const results = db.getAllSync(`SELECT * FROM MedicineLogs ORDER BY timestamp DESC`);
+        setMedicines(results);
+      }, []);
+
     const getTimeSinceLabel = (label: string): string => {
         const now = new Date();
         switch (label) {
@@ -28,7 +40,8 @@ export default function AnalyticsMain() {
 
     const [since, setSince] = useState<string>(() => getTimeSinceLabel('1W'));
     const [selectedRange, setSelectedRange] = useState<string>('1W');
-  
+    const [graphIndex, setGraphIndex] = useState(0);
+    
     
   
     const handleRangeSelect = (label: string) => {
@@ -37,24 +50,24 @@ export default function AnalyticsMain() {
     };
   
     return (
-      <View style={styless.Container}>
+      <View style={styles.Container}>
         <Text style={styles.greetingTitleCaregiver}>Analytics</Text>
   
         {/* Bubble Row */}
-        <View style={styless.bubbleRow}>
+        <View style={styles.bubbleRow}>
           {['1W', '1M', '6M', '1Y', 'All'].map((label, i) => (
             <TouchableOpacity
               key={i}
               style={[
-                styless.bubbleButton,
-                selectedRange === label && styless.selectedBubbleButton,
+                styles.bubbleButton,
+                selectedRange === label && styles.selectedBubbleButton,
               ]}
               onPress={() => handleRangeSelect(label)}
             >
               <Text
                 style={[
-                  styless.bubbleText,
-                  selectedRange === label && styless.selectedBubbleText,
+                  styles.bubbleText,
+                  selectedRange === label && styles.selectedBubbleText,
                 ]}
               >
                 {label}
@@ -65,20 +78,76 @@ export default function AnalyticsMain() {
   
         {/* Swipeable Graphs */}
         {since && (
-          <ScrollView
+        <>
+            <ScrollView
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
+            onScroll={(e) => {
+                const index = Math.round(e.nativeEvent.contentOffset.x / screenWidth);
+                setGraphIndex(index);
+            }}
+            scrollEventThrottle={16}
             style={{ width: screenWidth, marginTop: 12 }}
-          >
+            >
+            {/* Frequency Graph */}
             <View style={{ width: screenWidth, alignItems: 'center' }}>
-              <TremorFrequencyGraph since={since} />
+                <TremorFrequencyGraph since={since} />
             </View>
+
+            {/* Amplitude Graph */}
             <View style={{ width: screenWidth, alignItems: 'center' }}>
-              <TremorAmplitudeGraph since={since} />
+                <TremorAmplitudeGraph since={since} />
             </View>
-          </ScrollView>
+            </ScrollView>
+
+            {/* Pagination Dots */}
+            <View style={styles.pagination}>
+            {[0, 1].map((i) => (
+                <View
+                key={i}
+                style={[
+                    styles.dot,
+                    graphIndex === i ? styles.activeDot : styles.inactiveDot,
+                ]}
+                />
+            ))}
+            </View>
+        </>
         )}
+
+        {/* Medicine Picker */}
+        <View style={styles.medicinePickerContainer}>
+            <TouchableOpacity
+                onPress={() => setShowPicker((prev) => !prev)}
+                style={styles.dropdownButton}
+            >
+                <Text style={styles.dropdownText}>{selectedMedicineLabel}</Text>
+                <Text style={styles.dropdownArrow}>▼</Text>
+            </TouchableOpacity>
+
+            {showPicker && (
+                <ScrollView style={styles.scrollContainer}>
+                {medicines.map((med) => (
+                    <TouchableOpacity
+                    key={med.id}
+                    style={[
+                        styles.medicineItem,
+                        selectedMedicine === med.id && styles.selectedMedicineItem,
+                    ]}
+                    onPress={() => {
+                        setSelectedMedicine(med.id);
+                        setSelectedMedicineLabel(`${med.medication} - ${med.dosage}`);
+                        setShowPicker(false);
+                    }}
+                    >
+                    <Text style={styles.medicineText}>{med.medication} - {med.dosage}</Text>
+                    </TouchableOpacity>
+                ))}
+                </ScrollView>
+            )}
+        </View>
+
   
         {/* Insert Button */}
         <TouchableOpacity onPress={insertMockTremorLogs} style={{ marginTop: 16 }}>
@@ -88,7 +157,13 @@ export default function AnalyticsMain() {
     );
 }
 
-const styless = StyleSheet.create({
+const styles = StyleSheet.create({
+    greetingTitleCaregiver: {
+        fontFamily: 'SFProDisplay-Black',
+        fontSize: 32,
+        fontWeight: '800',
+        color: 'black',
+    },
     bubbleRow: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -124,5 +199,79 @@ const styless = StyleSheet.create({
         backgroundColor: '#DED7CD',
         marginTop: -15,
         alignSelf: 'stretch',
-      }
+      },
+      pagination: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 12,
+        gap: 8,
+      },
+      dot: {
+        borderRadius: 999,
+        backgroundColor: '#C3BDB6',
+      },
+      activeDot: {
+        width: 40,
+        height: 12,
+        backgroundColor: '#1C1C1C',
+      },
+      inactiveDot: {
+        width: 12,
+        height: 12,
+        backgroundColor: '#C3BDB6',
+        opacity: 0.6,
+      },
+      medicinePickerContainer: {
+        marginTop: 20,
+        paddingHorizontal: 16,
+      },
+      pickerLabel: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        color: '#333',
+      },
+      medicineItem: {
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#DDD',
+      },
+      selectedMedicineItem: {
+        backgroundColor: '#DED7CD',
+        borderRadius: 8,
+      },
+      medicineText: {
+        fontSize: 16,
+        color: '#333',
+      },
+      dropdownButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        backgroundColor: '#D3CCC4',
+        borderRadius: 32,
+        marginBottom: 8,
+      },
+      
+      dropdownText: {
+        fontSize: 16,
+        color: '#333',
+        fontFamily: 'SFProDisplay-Regular',
+      },
+      
+      dropdownArrow: {
+        fontSize: 16,
+        color: '#333',
+      },
+      
+      scrollContainer: {
+        maxHeight: 160,
+        borderRadius: 12,
+        backgroundColor: '#F6EEE3',
+        padding: 8,
+      },
+      
   });
