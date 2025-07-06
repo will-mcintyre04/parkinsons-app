@@ -29,7 +29,7 @@ export default function DatabaseDone() {
       addTremorLog(timestamp, freqVal, ampVal, journalText, medicineLogId);
 
       setTimeout(() => {
-        router.push('/PatientHomeScreen')
+        router.push('/')
       }, 3000)
     }
   }, [frequency, intensity, journal, router]);

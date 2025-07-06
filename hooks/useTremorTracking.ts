@@ -37,7 +37,7 @@ export function useTremorTracking() {
       .filter(p => p.x > 1 && p.x < 30)
       .reduce((max, p) => (p.y > max.y ? p : max), { x: 0, y: 0 });
 
-    const dominantFreq = dominant.y >= NOISE_THRESHOLD ? dominant.x : null;
+    const dominantFreq = dominant.y >= NOISE_THRESHOLD ? dominant.x /2: null;
     const amplitude = dominant.y;
 
     return { dominantFreq, amplitude, fft };
