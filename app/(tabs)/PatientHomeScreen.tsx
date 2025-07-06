@@ -87,12 +87,12 @@ export default function PatientHomeScreen() {
           </View>
         </TouchableOpacity>
 
-        <View style={styles.card2}>
+        <TouchableOpacity style={styles.card2} onPress={() => {router.push('/voicemode/sessionStart')}}>
           <LiftToTalkIcon width={40} height={40} />
           <View style={styles.textRow}>
             <Text style={styles.cardText}>Start a session</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.card3}>
           <Pills width={40} height={40} />

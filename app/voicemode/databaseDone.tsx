@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -13,6 +13,8 @@ export default function DatabaseDone() {
     journal?: string;
   }>();
 
+  const router = useRouter();
+
   useEffect(() => {
     if (frequency && amplitude) {
       const timestamp = new Date().toISOString();
@@ -25,13 +27,17 @@ export default function DatabaseDone() {
       const medicineLogId = latestMed?.id ?? null;
 
       addTremorLog(timestamp, freqVal, ampVal, journalText, medicineLogId);
+
+      setTimeout(() => {
+        router.push('/PatientHomeScreen')
+      }, 3000)
     }
-  }, [frequency, amplitude, journal]);
+  }, [frequency, amplitude, journal, router]);
 
   return (
     <View style={styles.container}>
       <MaterialIcons name="check-circle" size={80} color="#1C1C1C" />
-      <Text style={styles.title}>Journal entry logged.</Text>
+      <Text style={styles.title}>Session logged.</Text>
       <Text style={styles.subtitle}>Thanks for doing that :)</Text>
     </View>
   );
