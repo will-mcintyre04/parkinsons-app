@@ -23,3 +23,13 @@ export const getAllTremorLogs = () => {
   console.log('📊 Tremor Logs:', result);
   return result;
 };
+
+export const getTremorLogsSince = (sinceTimestamp: string) => {
+    const db = getDb();
+    const result = db.getAllSync(
+      `SELECT * FROM TremorLogs WHERE timestamp >= ? ORDER BY timestamp ASC`,
+      [sinceTimestamp]
+    );
+    return result;
+  };
+  
